@@ -1,14 +1,14 @@
 Pic-code 图片验证码 v1.0.1
 ====
 
-兼容原生JS和AMD规范
------
 
-安装：npm install TopuNet-Pic-code
------
+###兼容原生JS和AMD规范
 
-文件结构
-----
+###安装：npm install TopuNet-Pic-code
+
+
+##文件结构
+
     
     1.将pic_code.css , pic_code.less , pic_code.css.map 放在inc文件夹，样式可以在inc里面改
     2.将pic_code.js文件放在jq中（原生规范）或widget/lib（AMD规范）中
