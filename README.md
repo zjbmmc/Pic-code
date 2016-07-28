@@ -1,4 +1,4 @@
-Pic_code 图片验证码 v1.0.1
+Pic-code 图片验证码 v1.0.1
 ====
 
 兼容原生JS和AMD规范
