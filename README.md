@@ -17,7 +17,7 @@ Pic-code 图片验证码 v1.0.1
         
     原生引用
     
-      1. 页面底部引用/inc/jquery.min.js#1.x , zepto.js
+      1. 页面底部引用/inc/jquery.min.js#1.x 或 zepto.js
       2. 再引用/jq/pic_code.js
         
     requirejs引用
