@@ -64,7 +64,7 @@ var pic_code = {
 		    Callback_success: function() { //验证成功回调，默认方法：pic_code.valid_success_callback()	
 		    	pic_code.valid_success_callback();
 		    }
-		}
+		};
 
         //在html头部引入验证码样式表
         var  link = $('<link href="/inc/pic_code.css" rel="stylesheet" type="text/css" />');
@@ -75,14 +75,12 @@ var pic_code = {
 		if(pic_code.params.agent){
         	pic_code._opt.unit = 'px';
         }
-		//记录验证错误的次数
-		var pic_code_error_count=0;
 		//设置样式
-		pic_code.set_style()
+		pic_code.set_style();
 		//进入页面换张图
 		pic_code.change_background_url();
 		//监听 刷新验证码按钮 点击事件
-		pic_code.oRef_click()
+		pic_code.oRef_click();
     },
     //设置样式
     set_style : function(){
@@ -97,15 +95,17 @@ var pic_code = {
     	pic_code.dom_obj.oPicLoad.css({'width':pic_code._opt.div_width+company,'height':pic_code._opt.div_height+company});
     	pic_code.dom_obj.oPicLoad.find('img').css({'width':pic_code._opt.div_width+company,'height':pic_code._opt.div_height+company});
     },
+    //记录验证错误次数
+    pic_code_error_count : {error : 0},
     // 换大图
     change_background_url: function() {
-    	pic_code_error_count=0;
+    	pic_code.pic_code_error_count.error=0;
     	pic_code.dom_obj.oCircle.css('left','0px');
     	pic_code.dom_obj.oLine.html('按住左边滑块，拖动完成上方拼图');
     	pic_code.delateDiv();
     	pic_code.dom_obj.oPicLoad.css('display','block');
         var img = new Image();
-        var pic_len=pic_code._opt.background_url.length-1
+        var pic_len=pic_code._opt.background_url.length-1;
         img.src = pic_code._opt.background_url[rnd(0,pic_len)];
 
         var img_complete = function() {
@@ -114,14 +114,14 @@ var pic_code = {
         	pic_code.dom_obj.oPic.find('img').css({'width':pic_code._opt.div_width+pic_code._opt.unit,'height':pic_code._opt.div_height+pic_code._opt.unit});   
         	pic_code.create_div(); 
         	pic_code.oCircle_Click();
-        }
+        };
 
         if (img.complete) {
             img_complete();
         } else {
             img.onload = function() {  	
                 img_complete();
-            }
+            };
         }
     },
 
@@ -132,7 +132,7 @@ var pic_code = {
 		pic_code.dom_obj.oLine.html('按住左边滑块，拖动完成上方拼图');
     	setTimeout(function(){
     		pic_code.oCircle_Click();
-    	},1000)
+    	},1000);
     },
 
     //验证成功的默认回调
@@ -172,34 +172,33 @@ var pic_code = {
         		pic_code.dom_obj.oCircle.css('left',oL+'px');
 
         		oDiv2.css('left',(oL/oL_max_px*oDiv2_left_max_px+pic_code.params.left_begin)+'px');
-        	})
+        	});
         	$(document).on('mouseup touchend',function(){
         		//验证成功的操作
-        		if(Math.abs(parseInt(oDiv2.css('left'))-oD_left)<=pic_code._opt.valid_range){
-        			pic_code._opt.Callback_success&&pic_code._opt.Callback_success()
+        		if(Math.abs(parseInt(oDiv2.css('left'))-oD_left)<=pic_code._opt.valid_range &&pic_code._opt.Callback_success){
+        			pic_code._opt.Callback_success();
         			
         		}
         		//验证失败的操作
         		else {
-        			pic_code_error_count+=1;
-        			console.log(pic_code_error_count)
+        			pic_code.pic_code_error_count.error+=1;
         			pic_code.dom_obj.oCircle.unbind('mousedown touchstart');
         			pic_code.dom_obj.oPicMask.css('display','block');
         			setTimeout(function(){
         				pic_code.dom_obj.oPicMask.css('display','none');
         				
-        				if (pic_code_error_count==pic_code._opt.Callback_error_repeatedly_count){
+        				if (pic_code.pic_code_error_count.error==pic_code._opt.Callback_error_repeatedly_count){
         					pic_code._opt.Callback_error_repeatedly();
         				}else {
         					pic_code._opt.Callback_error();
         				}
-        			},1000)		
+        			},1000);	
         		}
         		$(document).unbind('mousemove touchmove');
         		$(document).unbind('mouseup touchend');	
-        	})
+        	});
         	return false;
-        })
+        });
     },
 
     // 监听 刷新验证码按钮 点击事件
@@ -208,7 +207,7 @@ var pic_code = {
         	pic_code.delateDiv();
         	pic_code.change_background_url();
         	pic_code.oCircle_Click();
-        })
+        });
     },
 
     // 创建小块
@@ -219,13 +218,13 @@ var pic_code = {
         oDiv2.appendTo(pic_code.dom_obj.oPicBao);
         var oD_left = rnd(pic_code._opt.crop_div,pic_code._opt.div_width-pic_code._opt.crop_div);
         var oD_top = rnd(5, pic_code._opt.div_height-pic_code._opt.crop_div-5);
-        oDiv1.css({'width':pic_code._opt.crop_div+pic_code._opt.unit,'height':pic_code._opt.crop_div+pic_code._opt.unit,'position' : 'absolute','left':oD_left+pic_code._opt.unit,'top' : oD_top+pic_code._opt.unit , 'background' : '#fff', 'box-shadow' : '0px 0px 2px 2px #000 inset'})
+        oDiv1.css({'width':pic_code._opt.crop_div+pic_code._opt.unit,'height':pic_code._opt.crop_div+pic_code._opt.unit,'position' : 'absolute','left':oD_left+pic_code._opt.unit,'top' : oD_top+pic_code._opt.unit , 'background' : '#fff', 'box-shadow' : '0px 0px 2px 2px #000 inset'});
        
         oDiv2.css({'width':pic_code._opt.crop_div+pic_code._opt.unit,'height':pic_code._opt.crop_div+pic_code._opt.unit,'position' : 'absolute','left': pic_code.params.left_begin+'px','top':oD_top+pic_code._opt.unit});
-  		oDiv2.css({'background':'url('+pic_code.dom_obj.oPic.find('img').attr('src')+')','background-position':'-'+oD_left+pic_code._opt.unit+' -'+oD_top+pic_code._opt.unit,'background-size':pic_code._opt.div_width+pic_code._opt.unit+' '+pic_code._opt.div_height+pic_code._opt.unit,'box-shadow' : '0px 0px 3px 3px yellow inset,0px 0px 3px 3px #000'})
+  		oDiv2.css({'background':'url('+pic_code.dom_obj.oPic.find('img').attr('src')+')','background-position':'-'+oD_left+pic_code._opt.unit+' -'+oD_top+pic_code._opt.unit,'background-size':pic_code._opt.div_width+pic_code._opt.unit+' '+pic_code._opt.div_height+pic_code._opt.unit,'box-shadow' : '0px 0px 3px 3px yellow inset,0px 0px 3px 3px #000'});
   		if(pic_code.params.agent){
-        	oDiv1.css('border','solid 1px #000')
-        	oDiv2.css('border','solid 1px #fff')
+        	oDiv1.css('border','solid 1px #000');
+        	oDiv2.css('border','solid 1px #fff');
         }
     },
 
