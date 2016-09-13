@@ -47,10 +47,10 @@ Pic-code 图片验证码 v1.0.2
     }
     
     pic_code.init(opt);
+
+
+
+###更新历史
     
-    
-    更新历史
-    ====
-    
-        1. 通过jshint验证
+    1. 通过jshint验证
     
