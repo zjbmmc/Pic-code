@@ -10,7 +10,18 @@ html, body, h1, h2, h3, h4, h5, h6, hr, p, ul, li, form, button, input, textarea
     border: 0;
     box-sizing: border-box;
 }
+div#pic_code_mask {
+	position: fixed;
+	top: 0;
+	left:0;
+	width: 100vw;
+	height: 100vh;
+	background: #000;
+	opacity: 0.6;
+	filter: alpha(opacity=60);
+	display: none;
 
+}
 div.pic_code {
 	width: 350px;
 	margin: 100px auto;
@@ -84,12 +95,23 @@ div.pic_code {
 		margin-top: 20px;
 		display: none;
 	}
-	div.pic_mask {
+	div.pic_code_mask {
 		width: 260px;
 		height: 160px;
 		background: #000;
 		opacity: 0.6;
 		filter: alpha(opacity=60);
+		position: absolute;
+		top:0; left: 0;
+		font-size: 60px;
+		line-height: 160px;
+		text-align: center;
+		font-weight: bold;
+		display: none;
+	}
+	div.pic_code_content {
+		width: 260px;
+		height: 160px;
 		position: absolute;
 		top:0; left: 0;
 		font-size: 60px;

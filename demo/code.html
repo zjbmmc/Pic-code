@@ -7,6 +7,8 @@
 <title>code</title>
 </head>
 <body>
+    <div id="pic_code_mask">
+    </div>
 	<div class="pic_code">
         <div class="pic_bao">
             <div class="pic"><img src="/img/1.jpg" alt="图片" /></div>   
@@ -18,7 +20,8 @@
             <div class="circle"></div>
         </div>
         <div class="success">验证成功</div>
-        <div class="pic_mask">×</div>
+        <div class="pic_code_mask"></div>
+        <div class="pic_code_content">×</div>
     </div>
 </body>
 <script type="text/javascript" src="/inc/jquery.min.js"></script>
@@ -31,6 +34,7 @@
 		    crop_div: 50, // 设置移动的小图片的宽高
 		    valid_range: 5, // 图片验证正确的容错范围，默认是5
 		    unit: "px", // 宽高及容错范围单位 "px|vw", 默认px，且IE6/7/8强制使用px
+            pic_mask: true,  //验证码大遮罩层，false-不显示遮罩层，true-显示遮罩层
 		    background_url: ["/img/1.jpg","/img/2.jpg","/img/3.jpg","/img/4.jpg"], // 大图路径，数组
 		    Callback_error_repeatedly_count: 3 // 触发多次验证失败回调的失败次数
 		}

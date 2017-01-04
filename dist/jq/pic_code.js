@@ -37,11 +37,12 @@ var pic_code = {
         oPicBao: $('.pic_bao'),		//大图和刷新按钮父级层
         oRef: $('.refresh'),		//刷新按钮
         oSuccess: $('.success'),	//验证成功的显示层
-        oPicMask: $('.pic_mask'),	//验证失败的遮罩层
-        oPicLoad: $('.pic_loading')	//图片加载时等待
+        oPicMask: $('.pic_code_mask'),	//验证失败的遮罩层
+        oPicContent : $('.pic_code_content'), //验证码失败时的红色X
+        oPicLoad: $('.pic_loading') //图片加载时等待
     },
     params : {
-    	left_begin: 5,	//设置小块初始位置距左侧的距离
+    	left_begin: 8,	//设置小块初始位置距左侧的距离
     	agent : window.navigator.userAgent.indexOf('MSIE 6.0')!=-1 || window.navigator.userAgent.indexOf('MSIE 7.0')!=-1 || window.navigator.userAgent.indexOf('MSIE 8.0')!=-1  //浏览器是ie6,7,8此值为true，否则为false
     },
     _opt : null,
@@ -54,6 +55,7 @@ var pic_code = {
 		    valid_range: 5, // 图片验证正确的容错范围，默认是5
 		    unit: "px", // 宽高及容错范围单位 "px|vw", 默认px，且IE6/7/8强制使用px
 		    background_url: [], // 大图路径，数组
+            pic_mask: false,  //验证码大遮罩层，false-不显示遮罩层，true-显示遮罩层
 		    Callback_error: function() { // 验证失败回调，默认为滑块和拼图小块滑回原位pic_code.doMove(oDiv2);
 		    	pic_code.doMove();
 		    }, 
@@ -94,13 +96,16 @@ var pic_code = {
     	//加载等待的样式
     	pic_code.dom_obj.oPicLoad.css({'width':pic_code._opt.div_width+company,'height':pic_code._opt.div_height+company});
     	pic_code.dom_obj.oPicLoad.find('img').css({'width':pic_code._opt.div_width+company,'height':pic_code._opt.div_height+company});
+        if (pic_code._opt.pic_mask){
+            $('#pic_code_mask').css('display','block');
+        }
     },
     //记录验证错误次数
     pic_code_error_count : {error : 0},
     // 换大图
     change_background_url: function() {
     	pic_code.pic_code_error_count.error=0;
-    	pic_code.dom_obj.oCircle.css('left','0px');
+    	pic_code.dom_obj.oCircle.css('left','-5px');
     	pic_code.dom_obj.oLine.html('按住左边滑块，拖动完成上方拼图');
     	pic_code.delateDiv();
     	pic_code.dom_obj.oPicLoad.css('display','block');
@@ -127,12 +132,12 @@ var pic_code = {
 
     //验证失败小块滑回原位
     doMove : function(){
-    	pic_code.dom_obj.oCircle.animate({'left':'0px'},1000);
-    	$('.pic_code .pic_bao div').eq(3).animate({'left':pic_code.params.left_begin+'px'},1000);
+    	pic_code.dom_obj.oCircle.animate({'left':'-5px'},300);
+    	$('.pic_code .pic_bao div').eq(3).animate({'left':pic_code.params.left_begin+'px'},300);
 		pic_code.dom_obj.oLine.html('按住左边滑块，拖动完成上方拼图');
     	setTimeout(function(){
     		pic_code.oCircle_Click();
-    	},1000);
+    	},300);
     },
 
     //验证成功的默认回调
@@ -154,7 +159,7 @@ var pic_code = {
         	//圆滑块的最大left值
         	var oL_max_px=parseInt(pic_code.dom_obj.oLine.css('width'))-parseInt(pic_code.dom_obj.oCircle.css('width'));
         	//可动的小块的最大leftzhi
-        	var oDiv2_left_max_px=parseInt(pic_code.dom_obj.oPic.css('width'))-parseInt(oDiv2.css('width'))-pic_code.params.left_begin;
+        	var oDiv2_left_max_px=parseInt(pic_code.dom_obj.oPic.css('width'))-parseInt(oDiv2.css('width'))-pic_code.params.left_begin-8;
         	$(document).on('mousemove touchmove',function(event){
         		var oL=event.clientX-disX || event.originalEvent.changedTouches[0].pageX-disX;
         		if (oL>=10){
@@ -184,8 +189,10 @@ var pic_code = {
         			pic_code.pic_code_error_count.error+=1;
         			pic_code.dom_obj.oCircle.unbind('mousedown touchstart');
         			pic_code.dom_obj.oPicMask.css('display','block');
+                    pic_code.dom_obj.oPicContent.css('display','block');
         			setTimeout(function(){
         				pic_code.dom_obj.oPicMask.css('display','none');
+                        pic_code.dom_obj.oPicContent.css('display','none');
         				
         				if (pic_code.pic_code_error_count.error==pic_code._opt.Callback_error_repeatedly_count){
         					pic_code._opt.Callback_error_repeatedly();
@@ -220,8 +227,11 @@ var pic_code = {
         var oD_top = rnd(5, pic_code._opt.div_height-pic_code._opt.crop_div-5);
         oDiv1.css({'width':pic_code._opt.crop_div+pic_code._opt.unit,'height':pic_code._opt.crop_div+pic_code._opt.unit,'position' : 'absolute','left':oD_left+pic_code._opt.unit,'top' : oD_top+pic_code._opt.unit , 'background' : '#fff', 'box-shadow' : '0px 0px 2px 2px #000 inset'});
        
-        oDiv2.css({'width':pic_code._opt.crop_div+pic_code._opt.unit,'height':pic_code._opt.crop_div+pic_code._opt.unit,'position' : 'absolute','left': pic_code.params.left_begin+'px','top':oD_top+pic_code._opt.unit});
-  		oDiv2.css({'background':'url('+pic_code.dom_obj.oPic.find('img').attr('src')+')','background-position':'-'+oD_left+pic_code._opt.unit+' -'+oD_top+pic_code._opt.unit,'background-size':pic_code._opt.div_width+pic_code._opt.unit+' '+pic_code._opt.div_height+pic_code._opt.unit,'box-shadow' : '0px 0px 3px 3px yellow inset,0px 0px 3px 3px #000'});
+        oDiv2.css({'width':pic_code._opt.crop_div+pic_code._opt.unit,'height':pic_code._opt.crop_div+pic_code._opt.unit,'position' : 'absolute','left': pic_code.params.left_begin+'px','top':oD_top+pic_code._opt.unit,'overflow' : 'hidden'});
+  		//oDiv2.css({'background':'url('+pic_code.dom_obj.oPic.find('img').attr('src')+')','background-position':'-'+oD_left+pic_code._opt.unit+' -'+oD_top+pic_code._opt.unit,'background-size':pic_code._opt.div_width+pic_code._opt.unit+' '+pic_code._opt.div_height+pic_code._opt.unit,'box-shadow' : '0px 0px 3px 3px yellow inset,0px 0px 3px 3px #000'});
+        oDiv2.css({'box-shadow' : '0px 0px 3px 3px yellow ,0px 0px 6px 6px #000'});
+        oDiv2.html('<img src='+pic_code.dom_obj.oPic.find('img').attr('src')+' style="width:'+pic_code._opt.div_width+pic_code._opt.unit+'; height:'+pic_code._opt.div_height+pic_code._opt.unit+'; position:relative; left:-'+oD_left+pic_code._opt.unit+'; top:-'+oD_top+pic_code._opt.unit+'">');
+
   		if(pic_code.params.agent){
         	oDiv1.css('border','solid 1px #000');
         	oDiv2.css('border','solid 1px #fff');
